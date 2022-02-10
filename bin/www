@@ -36,8 +36,8 @@ server.on("error", onError);
 server.on("listening", onListening);
 
 wss.on("connection", (ws)=> {
-  ws.on("message", ( ws, message, isBinary)=> {
-    ws.send("Helo from the server! You sent: %s", isBinary ? "[BINARY]" : message.data);
+  ws.on("message", (message) => {
+    ws.send("Helo from the server! You sent: " + message);
   });
 });
 /**
