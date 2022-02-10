@@ -1,4 +1,4 @@
 {
-  "defaultDir": "",
-  "filter": ""
+  "defaultDir": "/home/sbendit/node/node-express-dashboard",
+  "filter": "POST"
 }

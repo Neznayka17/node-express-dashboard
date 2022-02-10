@@ -1,5 +1,6 @@
 $(document).ready(() => {
-  const osPathSeparator = navigator.appVersion.indexOf("Win") != -1 ? "\\" : "/"
+  // const osPathSeparator = navigator.appVersion.indexOf("Win") != -1 ? "\\" : "/"
+  const osPathSeparator = "/";
   let currentPath = null;
   const options = {
     "paging": false,

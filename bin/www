@@ -9,7 +9,7 @@ const debug = require("debug")("log-dashboard:server");
 const http = require("http");
 const WebSocket = require("ws");
 const fs = require("fs");
-const { chunk } = require("lodash");
+const { getSettings } = require("../services/settings-service.js");
 /**
  * Get port from environment and store in Express.
  */
@@ -38,9 +38,14 @@ server.on("listening", onListening);
 
 wss.on("connection", (ws)=> {
   ws.on("message", (filePath) => {
+    console.log("Message:"+filePath);
     fs.watch(filePath, ()=> {
       fs.createReadStream(filePath).on("data", (chunk) => {
-        const logsArr = chunk.toString().split("\n");
+        let logsArr = chunk.toString().split("\n");
+        const settings = getSettings();
+        if (settings.filter) {
+          logsArr = logsArr.filter( line=> line.includes(settings.filter));
+        }
         const logsStr = logsArr.reverse().join("\n");
         ws.send(logsStr);
       });
