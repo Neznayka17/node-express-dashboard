@@ -8,7 +8,8 @@ const app = require("../app");
 const debug = require("debug")("log-dashboard:server");
 const http = require("http");
 const WebSocket = require("ws");
-
+const fs = require("fs");
+const { chunk } = require("lodash");
 /**
  * Get port from environment and store in Express.
  */
@@ -25,7 +26,7 @@ const server = http.createServer(app);
 /**
  * Create WS Server
  */
- const wss = new WebSocket.Server({ server: server, port: 8081 });
+ const wss = new WebSocket.Server({ server: server }); //, port: 8081
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -36,8 +37,16 @@ server.on("error", onError);
 server.on("listening", onListening);
 
 wss.on("connection", (ws)=> {
-  ws.on("message", (message) => {
-    ws.send("Helo from the server! You sent: " + message);
+  ws.on("message", (filePath) => {
+    console.log("Got message: " + filePath);
+    fs.watch(filePath, ()=> {
+      const stream = fs.createReadStream(filePath);
+      stream.on("data", (chunk)=>{
+        const logsArr = chunk.toString().split("\n");
+        const logsStr = logsArr.reverse().join("\n");
+        ws.send(logsStr);
+      });
+    });
   });
 });
 /**
