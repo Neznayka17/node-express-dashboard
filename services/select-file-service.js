@@ -10,21 +10,22 @@ function getDirectoryContents(files, currentDir, query) {
       data.push({
         name: file,
         isDirectory: true,
-        path: path.join(query, file)
+        path: path.join(query, file),
+        currentDir: currentDir
       });
     } else {
       data.push({
         name: file,
         isDirectory: false,
-        path: path.join(query, file)
+        path: path.join(query, file),
+        currentDir
       });
-    }
-    
+    }    
   });
+  return data;
 }
 
 function isDirectory(currentDir, file) {
-  console.log("isDirectory:", currentDir, file);
   const fileInfo = fs.statSync(path.join(currentDir, file));
   return fileInfo.isDirectory();
 }
@@ -42,10 +43,8 @@ function readDir(currentDir, res, query) {
 exports.get = (req, res) => {
   let currentDir = dir;
   const query = req.query.path || "";
-  console.log( "dir: "+ dir+" query:~"+query+"~");
   if (query) {
     currentDir = path.join(currentDir, query);
   }
   readDir(currentDir, res, query);
-  console.log(res);
 };
